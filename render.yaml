@@ -1,9 +1,9 @@
 services:
   - type: web
     name: topicos-especiais-front
-    runtime: static
+    runtime: node
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    startCommand: npx serve -s dist
     branch: main
     envVars:
       - key: VITE_API_URL

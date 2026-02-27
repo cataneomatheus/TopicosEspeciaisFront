@@ -232,9 +232,9 @@ O `render.yaml` e um **Blueprint** — um arquivo que configura o deploy automat
 services:
   - type: web               # Tipo de servico
     name: topicos-especiais-front  # Nome no painel do Render
-    runtime: static          # Static Site (nao precisa de servidor rodando)
+    runtime: node            # Ambiente Node.js
     buildCommand: npm install && npm run build   # Comando executado no deploy
-    staticPublishPath: ./dist                    # Pasta com os arquivos finais
+    startCommand: npx serve -s dist              # Comando que inicia o servidor
     branch: main             # Branch que dispara deploy
     envVars:
       - key: VITE_API_URL
@@ -244,9 +244,9 @@ services:
 #### Entendendo cada campo:
 
 - **type: web** — E um servico web (fica acessivel por URL)
-- **runtime: static** — Diz ao Render que e um site estatico. O Render nao precisa manter um servidor Node.js rodando — ele so serve os arquivos HTML/CSS/JS. Isso e mais barato e mais rapido que um Web Service
+- **runtime: node** — Diz ao Render que e um projeto Node.js
 - **buildCommand** — O Render roda esse comando toda vez que faz deploy. Ele instala as dependencias e gera a pasta `dist/`
-- **staticPublishPath: ./dist** — Diz ao Render qual pasta contem os arquivos finais para servir
+- **startCommand** — Depois do build, o Render executa esse comando para manter a aplicacao rodando. O `npx serve -s dist` sobe um servidor HTTP leve que serve os arquivos compilados. A flag `-s` ativa o modo SPA (redireciona rotas desconhecidas para `index.html`, necessario para React)
 - **branch: main** — Qualquer push nessa branch dispara um novo deploy automatico
 - **sync: false** — A variavel `VITE_API_URL` nao tem valor fixo no YAML. Voce define manualmente no painel do Render, porque a URL do backend so existe depois que ele for deployado
 
@@ -261,7 +261,7 @@ services:
 
 O frontend e **estatico** porque depois do build, nao precisa de Node.js rodando. E so HTML, CSS e JavaScript que o navegador executa diretamente.
 
-### Passo a passo para deploy
+### Passo a passo para deploy (Static Site)
 
 1. **Faca deploy do backend primeiro** — voce precisa da URL dele para configurar aqui
 2. **Suba o codigo para o GitHub** — crie um repositorio e faca push da branch `main`
@@ -272,6 +272,44 @@ O frontend e **estatico** porque depois do build, nao precisa de Node.js rodando
    - `VITE_API_URL` = URL do backend (ex: `https://topicos-especiais-api.onrender.com`)
 7. Clique em **Create Static Site**
 8. Aguarde o build (~1 minuto)
+
+### Passo a passo para deploy (Web Service — alternativa)
+
+Se voce escolheu **New > Web Service** em vez de Static Site, o Render vai pedir um **Start Command**. Isso acontece porque um Web Service precisa de um processo rodando para servir os arquivos, diferente do Static Site que o proprio Render serve automaticamente.
+
+Nesse caso, preencha os campos assim:
+
+| Campo             | Valor                                  |
+|-------------------|----------------------------------------|
+| **Build Command** | `npm install && npm run build`         |
+| **Start Command** | `npx serve -s dist`                   |
+
+#### O que e o Start Command e por que precisa dele?
+
+No modo **Static Site**, o Render cuida de servir os arquivos HTML/CSS/JS para voce — nao precisa de nenhum processo rodando. E so apontar a pasta `dist/` e pronto.
+
+No modo **Web Service**, o Render espera que **voce** rode um servidor. Ele te da uma maquina e diz: "me diz qual comando iniciar". Se voce nao informar, ele nao sabe o que fazer com a pasta `dist/`.
+
+O comando `npx serve -s dist` faz o seguinte:
+
+- **`npx`** — Executa um pacote npm sem precisar instalar globalmente
+- **`serve`** — Um servidor HTTP simples e leve feito para servir arquivos estaticos
+- **`-s`** — Modo SPA (Single Page Application). Quando alguem acessa uma rota que nao existe como arquivo (ex: `/about`), em vez de retornar 404, ele redireciona para o `index.html` e deixa o React resolver a rota. Sem isso, dar F5 em qualquer pagina que nao seja a raiz daria erro
+- **`dist`** — A pasta com os arquivos compilados do `npm run build`
+
+O `serve` automaticamente escuta na porta da variavel de ambiente `PORT` que o Render define, entao nao precisa configurar porta manualmente.
+
+#### Qual escolher: Static Site ou Web Service?
+
+| Aspecto                | Static Site                  | Web Service                    |
+|------------------------|------------------------------|--------------------------------|
+| Start Command          | Nao precisa                  | `npx serve -s dist`           |
+| Quem serve os arquivos | O proprio Render (CDN)       | Um processo Node.js (serve)   |
+| Performance            | Melhor (CDN otimizado)       | Boa (servidor simples)        |
+| Plano gratuito         | Sim                          | Sim (com limitacoes de uso)   |
+| Simplicidade           | Mais simples                 | Precisa de Start Command      |
+
+**Recomendacao:** Use **Static Site** se disponivel. Use Web Service se o plano gratuito de Static Site nao estiver disponivel ou se voce precisar de mais controle.
 
 ### Deploy automatico
 

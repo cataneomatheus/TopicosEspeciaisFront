@@ -18,6 +18,8 @@ const SLOT_LABELS = {
   11: 'TEC',
 };
 
+const FIELD_SLOTS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 export default function Field({ players, onAdd, onEdit, onRemove }) {
   const getPlayerBySlot = (slot) => players.find((p) => p.slotIndex === slot);
 
@@ -35,58 +37,17 @@ export default function Field({ players, onAdd, onEdit, onRemove }) {
 
         <div className="field__title">MEU TIME</div>
 
-        {/* Atacantes (FWD) - Slots 9, 10 */}
-        <div className="field__row field__row--fwd">
-          {[9, 10].map((slot) => (
+        {FIELD_SLOTS.map((slot) => (
+          <div key={slot} className={`field__slot field__slot--${slot}`}>
             <PlayerCard
-              key={slot}
               player={getPlayerBySlot(slot)}
               position={SLOT_LABELS[slot]}
               onAdd={() => onAdd(slot, SLOT_POSITIONS[slot])}
               onEdit={onEdit}
               onRemove={onRemove}
             />
-          ))}
-        </div>
-
-        {/* Meio-campo (MID) - Slots 5, 6, 7, 8 */}
-        <div className="field__row field__row--mid">
-          {[5, 6, 7, 8].map((slot) => (
-            <PlayerCard
-              key={slot}
-              player={getPlayerBySlot(slot)}
-              position={SLOT_LABELS[slot]}
-              onAdd={() => onAdd(slot, SLOT_POSITIONS[slot])}
-              onEdit={onEdit}
-              onRemove={onRemove}
-            />
-          ))}
-        </div>
-
-        {/* Defesa (DEF) - Slots 1, 2, 3, 4 */}
-        <div className="field__row field__row--def">
-          {[1, 2, 3, 4].map((slot) => (
-            <PlayerCard
-              key={slot}
-              player={getPlayerBySlot(slot)}
-              position={SLOT_LABELS[slot]}
-              onAdd={() => onAdd(slot, SLOT_POSITIONS[slot])}
-              onEdit={onEdit}
-              onRemove={onRemove}
-            />
-          ))}
-        </div>
-
-        {/* Goleiro (GK) - Slot 0 */}
-        <div className="field__row field__row--gk">
-          <PlayerCard
-            player={getPlayerBySlot(0)}
-            position={SLOT_LABELS[0]}
-            onAdd={() => onAdd(0, SLOT_POSITIONS[0])}
-            onEdit={onEdit}
-            onRemove={onRemove}
-          />
-        </div>
+          </div>
+        ))}
       </div>
 
       {/* Tecnico (COACH) - Slot 11 - fora do campo */}
