@@ -12,6 +12,9 @@ export default function PlayerCard({ player, position, onAdd, onEdit, onRemove }
 
   return (
     <div className="player-card filled">
+      {player.number > 0 && (
+        <span className="player-card__number">{player.number}</span>
+      )}
       <div className="player-card__photo">
         <img
           src={player.photoUrl || '/vite.svg'}

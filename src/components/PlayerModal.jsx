@@ -4,16 +4,19 @@ import './PlayerModal.css';
 export default function PlayerModal({ isOpen, onClose, onSave, player, slotIndex, position }) {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
+  const [number, setNumber] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
 
   useEffect(() => {
     if (player) {
       setName(player.name);
       setAge(String(player.age));
+      setNumber(String(player.number || ''));
       setPhotoUrl(player.photoUrl || '');
     } else {
       setName('');
       setAge('');
+      setNumber('');
       setPhotoUrl('');
     }
   }, [player, isOpen]);
@@ -26,6 +29,7 @@ export default function PlayerModal({ isOpen, onClose, onSave, player, slotIndex
       id: player?.id,
       name,
       age: parseInt(age, 10),
+      number: parseInt(number, 10) || 0,
       position,
       photoUrl,
       slotIndex,
@@ -57,6 +61,19 @@ export default function PlayerModal({ isOpen, onClose, onSave, player, slotIndex
               onChange={(e) => setName(e.target.value)}
               placeholder="Nome do jogador"
               required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="number">Numero da camisa</label>
+            <input
+              id="number"
+              type="number"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              placeholder="Ex: 10"
+              min="0"
+              max="99"
             />
           </div>
 

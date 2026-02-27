@@ -3,15 +3,15 @@
   flex-direction: column;
   align-items: center;
   gap: 28px;
-  padding: 20px;
-  perspective: 900px;
+  padding: 40px 20px 20px;
+  perspective: 800px;
 }
 
 .field {
   position: relative;
-  width: 100%;
-  max-width: 750px;
-  min-height: 660px;
+  width: 95vw;
+  max-width: 1100px;
+  min-height: 700px;
   background: linear-gradient(
     180deg,
     #2d8c3c 0%,
@@ -25,12 +25,13 @@
   );
   border-radius: 16px;
   border: 4px solid rgba(255, 255, 255, 0.6);
-  overflow: hidden;
+  overflow: visible;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 40px 80px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  transform: rotateX(8deg);
+  transform: rotateX(40deg);
   transform-origin: bottom center;
+  transform-style: preserve-3d;
 }
 
 /* ── Linhas do campo ── */
@@ -107,9 +108,9 @@
 /* ── Titulo ── */
 .field__title {
   position: absolute;
-  top: 12px;
+  top: 8px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotateX(-40deg);
   font-size: 1.2rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.5);
@@ -118,42 +119,43 @@
   z-index: 1;
 }
 
-/* ── Slots — posicao absoluta de cada jogador ── */
+/* ── Slots — posicao absoluta + cards "em pe" ── */
 .field__slot {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%) rotateX(-40deg);
+  transform-origin: bottom center;
   z-index: 2;
 }
 
 /*
-  Layout do campo (visto de cima, gol do time embaixo):
+  Visao de tras do gol (goleiro perto de voce, atacantes longe):
 
-         [ATA]       [ATA]            ← Atacantes
-  [ME]                      [MD]      ← Meias abertos (mais avancados)
-           [MC]     [MC]              ← Volantes (mais recuados)
-  [LE]                      [LD]      ← Laterais (mais avancados que zagueiros)
-           [ZAG]   [ZAG]              ← Zagueiros centrais
-                 [GK]                 ← Goleiro
+         [ATA]       [ATA]            ← Atacantes (topo — mais longe)
+  [ME]                      [MD]      ← Meias abertos
+           [MC]     [MC]              ← Volantes
+  [LE]                      [LD]      ← Laterais
+           [ZAG]   [ZAG]              ← Zagueiros
+                 [GK]                 ← Goleiro (base — mais perto)
 */
 
 /* Goleiro — slot 0 */
-.field__slot--0  { top: 88%; left: 50%; }
+.field__slot--0  { top: 90%; left: 50%; }
 
-/* Defesa — laterais mais avancados e abertos, zagueiros mais centrais e recuados */
-.field__slot--1  { top: 70%; left: 8%;  }  /* LE - lateral esquerdo */
-.field__slot--2  { top: 76%; left: 35%; }  /* ZAG - zagueiro centro-esq */
-.field__slot--3  { top: 76%; left: 65%; }  /* ZAG - zagueiro centro-dir */
-.field__slot--4  { top: 70%; left: 92%; }  /* LD - lateral direito */
+/* Defesa — laterais mais avancados e abertos, zagueiros centrais e recuados */
+.field__slot--1  { top: 73%; left: 12%; }  /* LE - lateral esquerdo */
+.field__slot--2  { top: 78%; left: 36%; }  /* ZAG - zagueiro centro-esq */
+.field__slot--3  { top: 78%; left: 64%; }  /* ZAG - zagueiro centro-dir */
+.field__slot--4  { top: 73%; left: 88%; }  /* LD - lateral direito */
 
 /* Meio-campo — meias abertos mais avancados, volantes mais recuados */
-.field__slot--5  { top: 44%; left: 8%;  }  /* ME - meia esquerdo */
-.field__slot--6  { top: 52%; left: 35%; }  /* MC - volante centro-esq */
-.field__slot--7  { top: 52%; left: 65%; }  /* MC - volante centro-dir */
-.field__slot--8  { top: 44%; left: 92%; }  /* MD - meia direito */
+.field__slot--5  { top: 46%; left: 12%; }  /* ME - meia esquerdo */
+.field__slot--6  { top: 53%; left: 36%; }  /* MC - volante centro-esq */
+.field__slot--7  { top: 53%; left: 64%; }  /* MC - volante centro-dir */
+.field__slot--8  { top: 46%; left: 88%; }  /* MD - meia direito */
 
 /* Atacantes */
-.field__slot--9  { top: 18%; left: 35%; }  /* ATA esquerdo */
-.field__slot--10 { top: 18%; left: 65%; }  /* ATA direito */
+.field__slot--9  { top: 22%; left: 36%; }  /* ATA esquerdo */
+.field__slot--10 { top: 22%; left: 64%; }  /* ATA direito */
 
 /* ── Tecnico ── */
 .field__coach {
@@ -163,29 +165,30 @@
 /* ── Responsivo ── */
 @media (max-width: 600px) {
   .field-wrapper {
-    perspective: 700px;
+    perspective: 600px;
+    padding: 30px 8px 20px;
   }
 
   .field {
-    min-height: 520px;
-    transform: rotateX(6deg);
+    min-height: 550px;
+    transform: rotateX(35deg);
   }
 
   .player-card {
-    width: 72px;
-    min-height: 95px;
-    font-size: 0.6rem;
+    width: 68px;
+    min-height: 88px;
+    font-size: 0.58rem;
   }
 
   .player-card__photo {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
   }
 
-  .field__slot--1  { left: 12%; }
-  .field__slot--4  { left: 88%; }
-  .field__slot--5  { left: 12%; }
-  .field__slot--8  { left: 88%; }
+  .field__slot--1  { left: 14%; }
+  .field__slot--4  { left: 86%; }
+  .field__slot--5  { left: 14%; }
+  .field__slot--8  { left: 86%; }
 
   .field__center-circle {
     width: 90px;

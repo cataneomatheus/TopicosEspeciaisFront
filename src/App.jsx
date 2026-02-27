@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Field from './components/Field';
+import PlayerList from './components/PlayerList';
 import PlayerModal from './components/PlayerModal';
 import { getPlayers, createPlayer, updatePlayer, deletePlayer } from './services/api';
 import './App.css';
@@ -88,12 +89,16 @@ function App() {
 
       {error && <div className="app__error">{error}</div>}
 
-      <Field
-        players={players}
-        onAdd={handleAdd}
-        onEdit={handleEdit}
-        onRemove={handleRemove}
-      />
+      <div className="app__content">
+        <PlayerList players={players} />
+
+        <Field
+          players={players}
+          onAdd={handleAdd}
+          onEdit={handleEdit}
+          onRemove={handleRemove}
+        />
+      </div>
 
       <PlayerModal
         isOpen={modalOpen}
